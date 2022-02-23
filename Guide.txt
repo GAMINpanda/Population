@@ -1,0 +1,13 @@
+﻿Ideas
+
+Mass extinction event ==> 80 - 100 % population die (1 in 1000000 chance)
+
+Large scale diaster ==> 1 - 10% of population die (1 in 10000 chance)
+
+Medium scale disaster ==> 0.1 - 1 % of population die (1 in 1000 chance)
+
+Small scale disaster ==> 0.001 - 0.1 % of population die (1 in 100 chance)
+
+Three metrics to control prosperity, which controls birth + death rates => food, population and innovation
+
+User inputs are self explanatory aside from Difficulty, which affects the frequency of various events and growth
