@@ -9,38 +9,54 @@ namespace Simulator
       //Based on historical variation and stuff once done a paragraph will explain the history the population
         static List<double> Run(double population, double difficulty, int duration) //function to run the program
         {
-            double percent = (0.001 / difficulty);
-            double birth = 1 + percent; 
-            double death = 1 - percent;
+            double birth = 1 + (0.001 / difficulty); 
+            double deathmod = 1; //modifier applied to population to work out how far the population decreases ==> the closer to 1 the better
 
-            double innovation = 1;
-            double invrate = 1 + percent;
+            double innovation = 1; //base variable for progress
+            double invrate = 1 + (0.001 / difficulty); //how fast that progress advances
 
-            double food = 0.98;
+            double food = 1; //determines food supply
 
-            for (int i = 0; i <= duration; i++) //runs iterations
+            int count = 0; //counts years in case of early collapse
+
+            for (int i = 0; i <= duration; i++)
             {
-                population = ((population + (population * 1.05)) * birth) - ((population * 0.95) * death);
-                innovation = innovation * invrate + (innovation * (1 - food));
+                population = population * birth * deathmod; //self explanatory
+                innovation = innovation * invrate; //same
 
-                if (population > (innovation * 1000000)) //innovation can only support so much population
+                if (population > (innovation * 10000)) //innovation can only support so much population (10,000 for every point of innovation
                 {
-                    population = population * 0.98;
+                    population = population * 0.98; //gradual decay if limit is reached
                 }
 
-                birth = (food * birth) + (innovation / 1000);
-                death = (death / food) - (innovation / 1000);
+                birth = birth + (innovation / 1000) + (food - 1); //birth reliant on current technology and food supply
+                deathmod = (deathmod / food) + (innovation / 1000); //death reliant on food supply and innovation
 
-                if (population < 100)
+                food = (food + ((innovation * 10000) / population)) / 2; //food reliant on proportion of innovation to population and current food supply
+                invrate = 1 + (innovation * 1000) / population; //invrate never goes negative
+
+                if (population < 100) //Consider 100 a number irrecoverable for the population 
                 {
                     break;
                 }
+
+                if (deathmod > 1) //the death modifer would never exceed 1
+                {
+                    deathmod = 0.99; //some people have to die
+                }
+
+                if (birth < 1) //the birth modifier would never fall below 1
+                {
+                    birth = 1.01; //people always born
+                }
+                count++;
             }
 
-            return new List<double>() { population, innovation};
+            return new List<double>() { population, innovation, count};
         }
         static void Main(string[] args)
         {
+            /*
             Console.WriteLine("===========================================");
             Console.WriteLine("===========WELCOME=TO=WORLD=SIM============");
             Console.WriteLine("===========================================");
@@ -55,7 +71,10 @@ namespace Simulator
             int duration = Convert.ToInt32(Console.ReadLine());
 
             List<double> output = Run(population,difficulty,duration);
-            Console.WriteLine("Final=Population:={0}=Final=Innovation:={1}",output[0], output[1]);
+            */
+
+            List<double> output = Run(5000,1, 1000);
+            Console.WriteLine("Final=Population:={0}=Final=Innovation:={1}=Years:={2}",output[0], output[1], output[2]);
         }
     }
 }
